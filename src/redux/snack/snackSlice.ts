@@ -6,15 +6,23 @@ export const snackSlice = createSlice({
     name: 'snack',
     initialState,
     reducers: {
-        setSingleSnack: (state, action: PayloadAction<SetSingleSnackPayload>) => {
-            state.snackData[action.payload.index].snack = action.payload.snack;
+        setSingleSnack: (state, action: PayloadAction<string>) => {
+            state.snackData[state.index].snack = action.payload;
         },
         initSnack: (state, action: PayloadAction<SnackData[]>) => {
             state.snackData = action.payload;
+        },
+        nextDay: (state) => {
+            if (state.index < state.snackData.length - 1)
+                state.index += 1;
+        },
+        prevDay: (state) => {
+            if (state.index > 0)
+                state.index -= 1;
         }
     }
 })
 
-export const { setSingleSnack, initSnack } = snackSlice.actions;
+export const { setSingleSnack, initSnack, nextDay, prevDay } = snackSlice.actions;
 
 export default snackSlice.reducer

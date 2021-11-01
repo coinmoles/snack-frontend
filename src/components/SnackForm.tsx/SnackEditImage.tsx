@@ -104,7 +104,7 @@ export const SnackEditImage: React.FC = () => {
                         type="number"
                         onChange={(event) => setColNum(parseInt(event.target.value))}
                         fluid
-                        label="Cols" />
+                        label="Col Num" />
                     <Form.Input
                         disabled={!topLeft.notNull}
                         type="number"

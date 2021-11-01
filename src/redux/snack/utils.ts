@@ -2,13 +2,14 @@ import { SnackData } from "../../utils/interface/SnackData";
 
 export interface SnackState {
     snackData: SnackData[]
+    index: number;
 }
 
 export const initialState: SnackState = {
-    snackData: []
+    snackData: [],
+    index: 0
 }
 
 export interface SetSingleSnackPayload {
-    index: number,
     snack: string
 }
