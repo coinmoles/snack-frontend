@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Form } from "semantic-ui-react";
+import { Form, Loader } from "semantic-ui-react";
 import { RootState } from "../../redux";
 import { nextDay, prevDay, setSingleSnack } from "../../redux/snack/snackSlice";
 
-export const SnackEditForm: React.FC = () => {
+export const SnackEdit: React.FC = () => {
     const dispatch = useDispatch();
     const [newSnack, setNewSnack] = useState("");
     const snackData = useSelector((state: RootState) => state.snack.snackData[state.snack.index]);
+    const snackLoading = useSelector((state: RootState) => state.loading.snacks);
     useEffect(() => {
         if (snackData !== undefined) 
             setNewSnack(snackData.snack)
     }, [snackData]);
 
-    if (snackData === undefined)
+    if (snackLoading === "None")
         return <div />
+    else if (snackLoading === "Loading")
+        return <Loader active />
     else {
         const { year, month, day } = snackData;
         return (

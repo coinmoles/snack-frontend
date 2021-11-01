@@ -2,8 +2,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Grid, Header, Segment } from "semantic-ui-react";
 import { RootState } from "../../redux";
-import { SnackEditForm } from "./SnackEditForm";
-import { SnackEditImage } from "./SnackEditImage";
+import { SnackEdit } from "./SnackEdit";
+import { SnackImage } from "./SnackImage";
 
 export const SnackEditSection: React.FC = () => {
     const imageUrl = useSelector((state: RootState) => state.url.imageUrl)
@@ -13,10 +13,10 @@ export const SnackEditSection: React.FC = () => {
             <Header as="h3" content="Edit" />
             <Grid>
                 <Grid.Column width="8">
-                    <SnackEditImage />
+                    <SnackImage />
                 </Grid.Column>
                 <Grid.Column width="8">
-                    <SnackEditForm />
+                    <SnackEdit />
                 </Grid.Column>
             </Grid>
         </Segment>

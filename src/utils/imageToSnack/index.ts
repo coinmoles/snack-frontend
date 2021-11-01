@@ -13,5 +13,5 @@ export const imageToSnack = async (imgUrl: string, rows: number[], cols: number[
     
     const snackDatas = await postSnackData(snackTexts, year, month); 
     
-    return snackDatas;
+    return snackDatas
 }

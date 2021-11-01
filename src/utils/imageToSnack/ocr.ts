@@ -9,6 +9,7 @@ export const ocr = async (imgUrl: string, rectangle: Rectangle): Promise<string>
         await worker.loadLanguage("kor");
         await worker.initialize("kor")
     }
+
     const { data: { text }} = await worker.recognize(imgUrl, { rectangles: [rectangle] });
 
     return text

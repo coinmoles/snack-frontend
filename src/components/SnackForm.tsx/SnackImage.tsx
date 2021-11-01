@@ -2,6 +2,7 @@ import React, { MouseEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Container, Form, Image, Ref } from "semantic-ui-react";
 import { RootState } from "../../redux";
+import { finishSnackLoading, resetPostLoading, startImageLoading, startSnackLoading } from "../../redux/loading/loadingSlice";
 import { setRectCols, setRectRows } from "../../redux/rect/rectSlice";
 import { initSnack } from "../../redux/snack/snackSlice";
 import { imageToSnack } from "../../utils/imageToSnack";
@@ -21,10 +22,11 @@ interface PosNotNull {
 
 type Pos = PosNotNull | PosNull
 
-export const SnackEditImage: React.FC = () => {
+export const SnackImage: React.FC = () => {
     const imageUrl = useSelector((state: RootState) => state.url.imageUrl);
     const ref = React.useRef<HTMLImageElement>(null);
     const dispatch = useDispatch();
+    const imageLoading = useSelector((state: RootState) => state.loading.image);
     const [dragStart, setDragStart] = useState<Pos>({ notNull: false, x: null, y: null });
     const [topLeft, setTopLeft] = useState<Pos>({ notNull: false, x: null, y: null });
     const [bottomRight, setBottomRight] = useState<Pos>({ notNull: false, x: null, y: null })
@@ -59,7 +61,9 @@ export const SnackEditImage: React.FC = () => {
 
         setTopLeft(configPos(x_left, y_top));
         setBottomRight(configPos(x_right, y_bottom));
-        setDragStart({ notNull: false, x: null, y: null })
+        dispatch(startImageLoading());
+        dispatch(resetPostLoading());
+        setDragStart({ notNull: false, x: null, y: null });
     }
 
     const setRect = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -82,10 +86,12 @@ export const SnackEditImage: React.FC = () => {
 
         dispatch(setRectCols(cols));
         dispatch(setRectRows(rows));
-
-       const snackDatas = await imageToSnack(imageUrl, rows, cols);
+        dispatch(startSnackLoading());
+        dispatch(resetPostLoading());
+        const snackDatas = await imageToSnack(imageUrl, rows, cols);
        
-       dispatch(initSnack(snackDatas));
+        dispatch(initSnack(snackDatas));
+        dispatch(finishSnackLoading());
     }
 
     return (
@@ -101,19 +107,19 @@ export const SnackEditImage: React.FC = () => {
             <Form className="mt-3 overflow-hidden" onSubmit={setRect}>
                 <Form.Group widths="equal">
                     <Form.Input
-                        disabled={!topLeft.notNull}
+                        disabled={imageLoading === "None"}
                         type="number"
                         onChange={(event) => setColNum(parseInt(event.target.value))}
                         fluid
                         label="Col Num" />
                     <Form.Input
-                        disabled={!topLeft.notNull}
+                        disabled={imageLoading === "None"}
                         type="number"
                         onChange={(event) => setRowNum(parseInt(event.target.value))}
                         fluid
                         label="Row Num" />
                 </Form.Group>
-                <Form.Button disabled={!topLeft.notNull} floated="right" content="OCR" />
+                <Form.Button disabled={imageLoading === "None"} floated="right" content="OCR" />
             </Form>
         </Container>
     )
