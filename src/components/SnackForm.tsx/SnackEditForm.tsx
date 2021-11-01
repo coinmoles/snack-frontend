@@ -9,7 +9,8 @@ export const SnackEditForm: React.FC = () => {
     const [newSnack, setNewSnack] = useState("");
     const snackData = useSelector((state: RootState) => state.snack.snackData[state.snack.index]);
     useEffect(() => {
-        setNewSnack(snackData.snack)
+        if (snackData !== undefined) 
+            setNewSnack(snackData.snack)
     }, [snackData]);
 
     if (snackData === undefined)
@@ -17,7 +18,7 @@ export const SnackEditForm: React.FC = () => {
     else {
         const { year, month, day } = snackData;
         return (
-            <Form style={{overflow: "hidden"}}>
+            <Form style={{overflow: "hidden"}} className="mt-28">
                 <Form.Group widths="equal">
                     <Form.Input fluid label="Year" value={year} placeholder="Year" />
                     <Form.Input fluid label="Month" value={month} placeholder="Month" />

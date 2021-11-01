@@ -12,9 +12,6 @@ export const SnackUrlForm: React.FC = () => {
     const handleClick = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
         dispatch(setImageUrl(url));
-        dispatch(initSnack(await axios.post("https://snack-backend.herokuapp.com/snack", {
-            imgUrl: url
-        })));
     }
 
     return (

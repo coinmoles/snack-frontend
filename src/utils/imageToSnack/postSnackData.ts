@@ -8,24 +8,28 @@ export const postSnackData = async (snackTexts: SnackText[], year: number, month
         month,
         day: 1
     }).setLocale("ko-KR")
+    console.log(date, date.weekday);
     while (![1, 2, 3, 4].includes(date.weekday)) {
         date = date.plus({ days: 1 })
+        
     }
 
     const snackDatas: SnackData[] = [];
 
-    for (const snackText of snackTexts) {
+    for (const snackText of snackTexts) {    
+        console.log(date, date.weekday);
         const snackData: SnackData = {
             year: date.year,
             month: date.month,
             day: date.day,
             snack: snackText.snackText.replace(/ /g, "")
         }
+        console.log(snackText.dateText);
         
-        if (!/^[\s,\\/]*$/g.test(snackData.snack))
+        if (!/^[\s,\\/~]*$/g.test(snackData.snack))
             snackDatas.push(snackData);
 
-        if (snackText.dateText !== '') {
+        if (!/^[\s,\\/~]*$/g.test(snackText.dateText)) {
             if ([1, 2, 3].includes(date.weekday))
                 date = date.plus({ days: 1 });
             else if (date.weekday === 4)

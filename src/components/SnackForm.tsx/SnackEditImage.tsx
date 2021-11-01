@@ -84,6 +84,7 @@ export const SnackEditImage: React.FC = () => {
         dispatch(setRectRows(rows));
 
        const snackDatas = await imageToSnack(imageUrl, rows, cols);
+       
        dispatch(initSnack(snackDatas));
     }
 
