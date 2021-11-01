@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Container, Form, Image, Ref } from "semantic-ui-react";
 import { RootState } from "../../redux";
 import { setRectCols, setRectRows } from "../../redux/rect/rectSlice";
+import { initSnack } from "../../redux/snack/snackSlice";
+import { imageToSnack } from "../../utils/imageToSnack";
+import { ocr } from "../../utils/imageToSnack/ocr";
 
 interface PosNull {
     notNull: false,
@@ -25,8 +28,8 @@ export const SnackEditImage: React.FC = () => {
     const [dragStart, setDragStart] = useState<Pos>({ notNull: false, x: null, y: null });
     const [topLeft, setTopLeft] = useState<Pos>({ notNull: false, x: null, y: null });
     const [bottomRight, setBottomRight] = useState<Pos>({ notNull: false, x: null, y: null })
-    const [rows, setRows] = useState<number>(0);
-    const [cols, setCols] = useState<number>(0);
+    const [rowNum, setRowNum] = useState<number>(0);
+    const [colNum, setColNum] = useState<number>(0);
 
     const handleMouseDown = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
         setDragStart({ notNull: true, x: event.clientX, y: event.clientY });
@@ -59,8 +62,10 @@ export const SnackEditImage: React.FC = () => {
         setDragStart({ notNull: false, x: null, y: null })
     }
 
-    const setRect = (event: React.FormEvent<HTMLFormElement>) => {
+    const setRect = async (event: React.FormEvent<HTMLFormElement>) => {
         if (!topLeft.notNull || !bottomRight.notNull)
+            return;
+        if (imageUrl === undefined)
             return;
 
         const linspace = (start: number, stop: number, card: number): number[] => {
@@ -72,19 +77,22 @@ export const SnackEditImage: React.FC = () => {
             return arr;
         }
         
-        dispatch(setRectCols(linspace(topLeft.x, bottomRight.x, cols + 1)));
-        dispatch(setRectRows(linspace(topLeft.y, bottomRight.y, rows + 1)));
+        const rows = linspace(topLeft.y, bottomRight.y, rowNum + 1)
+        const cols = linspace(topLeft.x, bottomRight.x, colNum + 1)
+
+        dispatch(setRectCols(cols));
+        dispatch(setRectRows(rows));
+
+       const snackDatas = await imageToSnack(imageUrl, rows, cols);
+       dispatch(initSnack(snackDatas));
     }
 
     return (
         <Container>
             <Ref innerRef={ref} >
                 <Image
+                    crossOrigin="Anonymous"
                     src={imageUrl}
-                    onClick={() => {
-                        console.log(topLeft);
-                        console.log(bottomRight);
-                    }}
                     onMouseDown={handleMouseDown}
                     onMouseUp={handleMouseUp}
                 />
@@ -94,15 +102,15 @@ export const SnackEditImage: React.FC = () => {
                     <Form.Input
                         disabled={!topLeft.notNull}
                         type="number"
-                        onChange={(event) => setCols(parseInt(event.target.value))}
+                        onChange={(event) => setColNum(parseInt(event.target.value))}
                         fluid
                         label="Cols" />
                     <Form.Input
                         disabled={!topLeft.notNull}
                         type="number"
-                        onChange={(event) => setRows(parseInt(event.target.value))}
+                        onChange={(event) => setRowNum(parseInt(event.target.value))}
                         fluid
-                        label="Rows" />
+                        label="Row Num" />
                 </Form.Group>
                 <Form.Button disabled={!topLeft.notNull} floated="right" content="OCR" />
             </Form>
