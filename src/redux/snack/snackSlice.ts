@@ -3,7 +3,7 @@ import { SetSingleSnackPayload, initialState } from "./utils";
 import { SnackData } from "../../utils/interface/SnackData";
 
 export const snackSlice = createSlice({
-    name: 'auth',
+    name: 'snack',
     initialState,
     reducers: {
         setSingleSnack: (state, action: PayloadAction<SetSingleSnackPayload>) => {

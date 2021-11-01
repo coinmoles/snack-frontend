@@ -2,6 +2,7 @@ import React, { MouseEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Container, Form, Image, Ref } from "semantic-ui-react";
 import { RootState } from "../../redux";
+import { setRectCols, setRectRows } from "../../redux/rect/rectSlice";
 
 interface PosNull {
     notNull: false,
@@ -58,6 +59,22 @@ export const SnackEditImage: React.FC = () => {
         setDragStart({ notNull: false, x: null, y: null })
     }
 
+    const setRect = (event: React.FormEvent<HTMLFormElement>) => {
+        if (!topLeft.notNull || !bottomRight.notNull)
+            return;
+
+        const linspace = (start: number, stop: number, card: number): number[] => {
+            let arr: number[] = [];
+            let step = (stop - start) / (card - 1);
+            for (let i = 0; i < card; i++) {
+                arr.push(Math.floor(start + (step * i)));
+            }
+            return arr;
+        }
+        
+        dispatch(setRectCols(linspace(topLeft.x, bottomRight.x, cols + 1)));
+        dispatch(setRectRows(linspace(topLeft.y, bottomRight.y, rows + 1)));
+    }
 
     return (
         <Container>
@@ -72,7 +89,7 @@ export const SnackEditImage: React.FC = () => {
                     onMouseUp={handleMouseUp}
                 />
             </Ref>
-            <Form className="mt-3 overflow-hidden">
+            <Form className="mt-3 overflow-hidden" onSubmit={setRect}>
                 <Form.Group widths="equal">
                     <Form.Input
                         disabled={!topLeft.notNull}
