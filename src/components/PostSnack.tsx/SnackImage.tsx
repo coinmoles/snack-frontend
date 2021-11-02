@@ -1,6 +1,6 @@
-import React, { MouseEvent, useState } from "react";
+import React, { MouseEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Header, Image, Ref } from "semantic-ui-react";
+import { Container, Header, Ref } from "semantic-ui-react";
 import { RootState } from "../../redux";
 import { finishImageLoading, finishSnackLoading, resetPostLoading, startSnackLoading } from "../../redux/loading/loadingSlice";
 import { setBaseRect } from "../../redux/rect/rectSlice";
@@ -21,16 +21,65 @@ type Pos = PosNotNull | PosNull
 
 export const SnackImage: React.FC = () => {
     const imageUrl = useSelector((state: RootState) => state.url.imageUrl);
-    const ref = React.useRef<HTMLImageElement>(null);
+    const ref = React.useRef<HTMLCanvasElement>(null);
     const dispatch = useDispatch();
+    const [img, setImg] = useState(new Image());
     const [dragStart, setDragStart] = useState<Pos>({ notNull: false, x: null, y: null });
+    const [imgLoading, setImgLoading] = useState(false);
 
-    const handleMouseDown = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
+    useEffect(() => {
+        if (imageUrl === undefined)
+            return
+        
+        img.src = imageUrl;
+        img.onload = () => setImgLoading(true);
+    }, [imageUrl]);
+
+    useEffect(() => {
+        if (ref.current === undefined || ref.current === null) 
+            return;
+        if (!imgLoading)
+            return;
+
+        const canvas = ref.current;
+        const ctx = ref.current.getContext("2d");
+        
+        if (ctx === null)
+            return;
+
+        canvas.height = canvas.width * img.height / img.width;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    }, [img, imgLoading, ref.current?.width, ref.current?.height])
+
+    const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement, globalThis.MouseEvent>) => {
         setDragStart({ notNull: true, x: event.clientX, y: event.clientY });
         event.preventDefault();
     }
 
-    const handleMouseUp = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
+    const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement, globalThis.MouseEvent>) => {
+        if (ref.current === undefined || ref.current === null) 
+            return;
+        if (!dragStart.notNull)
+            return;
+
+        const canvas = ref.current;
+        const ctx = canvas.getContext("2d");
+        if (ctx === null) 
+            return;
+        
+        const rect = canvas.getBoundingClientRect();
+
+        const [xStart, xStop] = configX(event.clientX, dragStart.x, rect, canvas);
+        const [yStart, yStop] = configY(event.clientY, dragStart.y, rect, canvas);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.strokeRect(xStart, yStart, xStop - xStart, yStop - yStart);
+        
+        return;
+    }
+
+    const handleMouseUp = (event: React.MouseEvent<HTMLCanvasElement, globalThis.MouseEvent>) => {
         if (!dragStart.notNull)
             return;
         if (event.clientX === null || event.clientX === undefined || event.clientY === null || event.clientY === undefined)
@@ -38,20 +87,18 @@ export const SnackImage: React.FC = () => {
         if (ref.current === undefined || ref.current === null)
             return
 
-        const { x: x_base, y: y_base } = ref.current.getBoundingClientRect();
-        const { clientWidth, clientHeight, naturalWidth, naturalHeight } = ref.current;
+        const canvas = ref.current;
+        const ctx = canvas.getContext("2d");
+        if (ctx === null) 
+            return;
         
-        const configX = (x: number): number =>
-            Math.floor((x - x_base) * naturalWidth / clientWidth);
-        const configY = (y: number): number =>
-            Math.floor((y - y_base) * naturalHeight / clientHeight);
+        const rect = canvas.getBoundingClientRect();
 
-        const [xStart, xStop]: number[] = [dragStart.x, event.clientX]
-            .sort((a: number, b: number) => a - b)
-            .map(configX);
-        const [yStart, yStop] = [dragStart.y, event.clientY]
-            .sort((a: number, b: number) => a - b)
-            .map(configY);
+        const [xStart, xStop] = configX(event.clientX, dragStart.x, rect, img);
+        const [yStart, yStop] = configY(event.clientY, dragStart.y, rect, img);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);    
 
         dispatch(setBaseRect({ xStart, xStop, yStart, yStop }));
         dispatch(finishImageLoading());
@@ -59,17 +106,34 @@ export const SnackImage: React.FC = () => {
         setDragStart({ notNull: false, x: null, y: null });
     }
 
+    const configX = (x1: number, x2: number, rect: DOMRect, base: { width: number, height: number }) => {
+        const config = (x: number) =>
+            (x - rect.left) * base.width / rect.width;
+        
+        return [x1, x2]
+            .sort((a, b) => a - b)
+            .map(config);
+    }
+
+    const configY = (y1: number, y2: number, rect: DOMRect, base: { width: number, height: number }) => {
+        const config = (y: number) =>
+            (y - rect.top) * base.height / rect.height;
+
+        return [y1, y2]
+            .sort((a, b) => a - b)
+            .map(config);
+    }
+
     return (
         <Container>
             <Header as="h4" content="Snack Image (Drag to select the table)" />
-            <Ref innerRef={ref} >
-                <Image
-                    crossOrigin="Anonymous"
-                    src={imageUrl}
-                    onMouseDown={handleMouseDown}
-                    onMouseUp={handleMouseUp}
-                />
-            </Ref>
+            <canvas
+                className="w-full"
+                ref={ref}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+            />
         </Container>
     )
 }
