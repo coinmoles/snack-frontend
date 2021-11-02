@@ -24,16 +24,16 @@ export const loadingSlice = createSlice({
             state.post = "None";
         },
         startImageLoading: state => {
-            state.image = "Done";
+            state.image = "Loading";
         },
-        resetImageLoading: state => {
-            state.image = "None";
+        finishImageLoading: state => {
+            state.image = "Done";
         }
     }
 })
 
 export const { startSnackLoading, finishSnackLoading, resetSnackLoading, 
     startPostLoading, finishPostLoading, resetPostLoading, 
-    startImageLoading, resetImageLoading } = loadingSlice.actions;
+    startImageLoading, finishImageLoading } = loadingSlice.actions;
 
 export default loadingSlice.reducer;

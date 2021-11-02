@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Header, Form, Segment } from "semantic-ui-react";
-import { initSnack } from "../../redux/snack/snackSlice";
+import { Form, Header, Segment } from "semantic-ui-react";
+import { resetPostLoading, resetSnackLoading, startImageLoading } from "../../redux/loading/loadingSlice";
 import { setImageUrl } from "../../redux/url/urlSlice";
-import axios from "axios"
-import { resetImageLoading, resetPostLoading, resetSnackLoading } from "../../redux/loading/loadingSlice";
 
 export const SnackUrlForm: React.FC = () => {
     const [url, setUrl] = useState("");
@@ -14,7 +12,7 @@ export const SnackUrlForm: React.FC = () => {
         event.preventDefault();
         dispatch(setImageUrl(url));
         dispatch(resetSnackLoading());
-        dispatch(resetImageLoading());
+        dispatch(startImageLoading());
         dispatch(resetPostLoading());
     }
 

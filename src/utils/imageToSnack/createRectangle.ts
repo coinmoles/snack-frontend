@@ -11,6 +11,8 @@ export const createRectangle = (rows: number[], cols: number[]) => {
                 top: rows[i],
                 height: rows[i + 1] - rows[i]
             })
+    
+    console.log(rectangles);
 
     return rectangles;
 }

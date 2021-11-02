@@ -1,15 +1,14 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Segment, Button, Input } from "semantic-ui-react";
+import { Button, Container, Header, Input, Segment } from "semantic-ui-react";
 import { RootState } from "../../redux";
 import { finishPostLoading, resetPostLoading, startPostLoading } from "../../redux/loading/loadingSlice";
-import { SnackEditSection } from "./SnackEditSection";
-import { SnackUrlForm } from "./SnackUrlForm";
 
-export const SnackForm: React.FC = () => {
+export const SnackPostSection: React.FC = () => {
     const snackDatas = useSelector((state: RootState) => state.snack.snackData)
     const postLoading = useSelector((state: RootState) => state.loading.post);
+    const snackLoading = useSelector((state: RootState) => state.loading.snacks);
     const dispatch = useDispatch();
     const [pwd, setPwd] = useState("");
     
@@ -34,15 +33,13 @@ export const SnackForm: React.FC = () => {
     }
 
     return (
-        <Segment style={{overflow: "hidden"}}>
-            <SnackUrlForm />
-            <SnackEditSection />
-            <Input value={pwd} label="API-KEY" onChange={(event) => setPwd(event.target.value)} />
+        <Segment style={snackLoading !== "Done" ? { display: "None" } : {}} className="overflow-hidden">
+            <Header as="h3" content="Post the Snack Data" />
+            <Input value={pwd} fluid label="API-KEY" className="mb-4" onChange={(event) => setPwd(event.target.value)} />
             {postLoading === "None" && <Button floated="right" primary content="Submit" onClick={handleSubmit} />}
             {postLoading === "Loading" && <Button floated="right" primary content="Submitting" loading />}
             {postLoading === "Done" && <Button floated="right" primary content="Submitted" disabled />}
-            
-
         </Segment>
     )
+
 }

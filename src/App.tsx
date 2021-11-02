@@ -1,12 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { SnackFormPage } from './components/SnackForm.tsx';
+import { PostSnackPage } from './components/PostSnack.tsx';
 
 function App() {
   return (
     <div className="App">
-      <SnackFormPage />
+      <PostSnackPage />
     </div>
   );
 }

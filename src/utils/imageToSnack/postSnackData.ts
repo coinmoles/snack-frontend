@@ -8,7 +8,6 @@ export const postSnackData = async (snackTexts: SnackText[], year: number, month
         month,
         day: 1
     }).setLocale("ko-KR")
-    console.log(date, date.weekday);
     while (![1, 2, 3, 4].includes(date.weekday)) {
         date = date.plus({ days: 1 })
         
@@ -24,7 +23,7 @@ export const postSnackData = async (snackTexts: SnackText[], year: number, month
             day: date.day,
             snack: snackText.snackText.replace(/ /g, "")
         }
-        console.log(snackText.dateText);
+        console.log(snackData);
         
         if (!/^[\s,\\/~]*$/g.test(snackData.snack))
             snackDatas.push(snackData);
