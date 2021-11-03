@@ -21,12 +21,15 @@ type Pos = PosNotNull | PosNull
 
 export const SnackImage: React.FC = () => {
     const imageUrl = useSelector((state: RootState) => state.url.imageUrl);
-    const ref = React.useRef<HTMLCanvasElement>(null);
-    const dispatch = useDispatch();
+    
     const [img, setImg] = useState(new Image());
     const [dragStart, setDragStart] = useState<Pos>({ notNull: false, x: null, y: null });
     const [imgLoading, setImgLoading] = useState(false);
 
+    const dispatch = useDispatch();
+
+    const ref = React.useRef<HTMLCanvasElement>(null);
+    
     useEffect(() => {
         if (imageUrl === undefined)
             return

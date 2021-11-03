@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Header } from "semantic-ui-react";
 import { RootState } from "../../redux";
@@ -10,14 +10,26 @@ import { imageToSnack } from "../../utils/imageToSnack";
 export const SnackRowAndCol: React.FC = () => {
     const imageUrl = useSelector((state: RootState) => state.url.imageUrl);
     const loadingCurrent = useSelector((state: RootState) => state.loading.current);
-    const disableRowAndCol = loadingCurrent !== "ImageSectionSelected" &&
-        loadingCurrent !== "OCRLoading";
-    const loadingRowAndCol = loadingCurrent === "OCRLoading";
+    const { xStart, xStop, yStart, yStop, xCard, yCard } = useSelector((state: RootState) => state.rect)
 
-    const { xStart, xStop, yStart, yStop } = useSelector((state: RootState) => state.rect)
+    const [newYCard, setNewYCard] = useState<number>(0);
+    const [newXCard, setNewXCard] = useState<number>(0);
+    const [disableRowAndCol, setDisAbleRowAndCol] = useState(true);
+    const [loadingRowAndCol, setLoadingRowAndCol] = useState(false);
+
     const dispatch = useDispatch();
-    const [yCard, setYCard] = useState<number>(0);
-    const [xCard, setXCard] = useState<number>(0);
+
+    useEffect(() => {
+        if (loadingCurrent === "NoImage" || loadingCurrent === "ImageExist"){
+            dispatch(setCards({ xCard: 0, yCard: 0 }));
+            setNewXCard(0);
+            setNewYCard(0);
+        }
+
+        setDisAbleRowAndCol(loadingCurrent !== "ImageSectionSelected" &&
+            loadingCurrent !== "OCRLoading");
+        setLoadingRowAndCol(loadingCurrent === "OCRLoading");
+    }, [loadingCurrent]);
 
     const handleSubmit = async () => {
         if (imageUrl === undefined)
@@ -32,9 +44,9 @@ export const SnackRowAndCol: React.FC = () => {
             return arr;
         }
 
-        dispatch(setCards({ xCard, yCard }))
+        dispatch(setCards({ xCard: newXCard, yCard: newYCard }))
         dispatch(startOCRLoading())
-        const snackDatas = await imageToSnack(imageUrl, linspace(yStart, yStop, yCard), linspace(xStart, xStop, xCard));
+        const snackDatas = await imageToSnack(imageUrl, linspace(yStart, yStop, newYCard), linspace(xStart, xStop, newXCard));
 
         dispatch(initSnack(snackDatas));
         dispatch(finishOCRLoading());
@@ -45,19 +57,29 @@ export const SnackRowAndCol: React.FC = () => {
             <Header as="h4" content="Set Column & Row Number" />
             <Form.Group widths="equal">
                 <Form.Input
-                    disabled={disableRowAndCol}
-                    type="number"
-                    onChange={(event) => setXCard(parseInt(event.target.value))}
                     fluid
-                    label="Col Num" />
+                    type="number"
+                    label="Col Num"
+                    value={newXCard}
+                    disabled={disableRowAndCol}
+                    onChange={(event) => setNewXCard(parseInt(event.target.value))}
+                />
                 <Form.Input
-                    disabled={disableRowAndCol}
-                    type="number"
-                    onChange={(event) => setYCard(parseInt(event.target.value))}
                     fluid
-                    label="Row Num" />
+                    type="number"
+                    label="Row Num"
+                    value={newYCard}
+                    disabled={disableRowAndCol}
+                    onChange={(event) => setNewYCard(parseInt(event.target.value))}
+                />
             </Form.Group>
-            <Form.Button loading={loadingRowAndCol} disabled={disableRowAndCol} floated="right" content="OCR" />
+
+            <Form.Button
+                floated="right"
+                content="OCR"
+                loading={loadingRowAndCol}
+                disabled={disableRowAndCol}
+            />
         </Form>
     )
 }

@@ -8,6 +8,7 @@ import { SnackRowAndCol } from "./SnackRowAndCol";
 
 export const SnackImageSection: React.FC = () => {
     const loadingCurrent = useSelector((state: RootState) => state.loading.current)
+    
     const fullImageShow = loadingCurrent === "ImageExist" || 
         loadingCurrent === "ImageSectionSelected" ||
         loadingCurrent === "OCRLoading";
