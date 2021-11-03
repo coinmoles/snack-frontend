@@ -12,8 +12,8 @@ export const SnackRowAndCol: React.FC = () => {
     const loadingCurrent = useSelector((state: RootState) => state.loading.current);
     const { xStart, xStop, yStart, yStop } = useSelector((state: RootState) => state.rect)
 
-    const [newYCard, setNewYCard] = useState<number | undefined>(undefined);
-    const [newXCard, setNewXCard] = useState<number | undefined>(undefined);
+    const [newYCard, setNewYCard] = useState<number | "">("");
+    const [newXCard, setNewXCard] = useState<number | "">("");
     const [disableRowAndCol, setDisAbleRowAndCol] = useState(true);
     const [loadingRowAndCol, setLoadingRowAndCol] = useState(false);
 
@@ -22,8 +22,8 @@ export const SnackRowAndCol: React.FC = () => {
     useEffect(() => {
         if (loadingCurrent === "NoImage" || loadingCurrent === "ImageExist"){
             dispatch(setCards({ xCard: 0, yCard: 0 }));
-            setNewXCard(undefined);
-            setNewYCard(undefined);
+            setNewXCard("");
+            setNewYCard("");
         }
 
         setDisAbleRowAndCol(loadingCurrent !== "ImageSectionSelected" &&
@@ -34,7 +34,7 @@ export const SnackRowAndCol: React.FC = () => {
     const handleSubmit = async () => {
         if (imageUrl === undefined)
             return;
-        if (newXCard === undefined || newYCard === undefined)
+        if (newXCard === "" || newYCard === "")
             return;
         
         const linspace = (start: number, stop: number, card: number): number[] => {

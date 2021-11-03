@@ -3,31 +3,31 @@ import { useDispatch, useSelector } from "react-redux";
 import { Container, Divider, Form, Header } from "semantic-ui-react";
 import { RootState } from "../../redux";
 import { setImageLoading } from "../../redux/loading/loadingSlice";
-import { deleteSingleSnack, nextDay, prevDay, setSingleSnack } from "../../redux/snack/snackSlice";
+import { deleteSingleSnack, initSnack, nextDay, prevDay, setSingleSnack } from "../../redux/snack/snackSlice";
 
 export const SnackEdit: React.FC = () => {
     const snackData = useSelector((state: RootState) => state.snack.snackData[state.snack.index]);
     const loadingCurrent = useSelector((state: RootState) => state.loading.current);
     
-    const [year, setYear] = useState<number | undefined>(undefined);
-    const [month, setMonth] = useState<number | undefined>(undefined);
-    const [day, setDay] = useState<number | undefined>(undefined);
-    const [newSnack, setNewSnack] = useState<string | undefined>(undefined);
+    const [year, setYear] = useState<number | "">("");
+    const [month, setMonth] = useState<number | "">("");
+    const [day, setDay] = useState<number | "">("");
+    const [newSnack, setNewSnack] = useState<string>("");
     
     const dispatch = useDispatch();
     
     useEffect(() => {
         if (loadingCurrent === "OCRComplete") {
-            setYear(snackData !== undefined ? snackData.year : undefined);
-            setMonth(snackData !== undefined ? snackData.month : undefined);
-            setDay(snackData !== undefined ? snackData.day : undefined);
-            setNewSnack(snackData !== undefined ? snackData.snack : undefined);
+            setYear(snackData !== undefined ? snackData.year : "");
+            setMonth(snackData !== undefined ? snackData.month : "");
+            setDay(snackData !== undefined ? snackData.day : "");
+            setNewSnack(snackData !== undefined ? snackData.snack : "");
         }
         else {
-            setYear(undefined);
-            setMonth(undefined);
-            setDay(undefined);
-            setNewSnack(undefined);
+            setYear("");
+            setMonth("");
+            setDay("");
+            setNewSnack("");
         }
     }, [snackData, loadingCurrent]);
     
@@ -112,6 +112,7 @@ export const SnackEdit: React.FC = () => {
                     disabled={disableEdit}
                     onClick={() => {
                         dispatch(setImageLoading());
+                        dispatch(initSnack([]));
                     }}
                 />
             </Container>
