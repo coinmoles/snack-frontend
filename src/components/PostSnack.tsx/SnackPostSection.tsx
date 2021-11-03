@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, Header, Input, Segment } from "semantic-ui-react";
 import { RootState } from "../../redux";
 import { finishOCRLoading, finishPostLoading, startPostLoading } from "../../redux/loading/loadingSlice";
+import { BACKEND_URI } from "../../utils/constants";
 
 export const SnackPostSection: React.FC = () => {
     const snackDatas = useSelector((state: RootState) => state.snack.snackData);
@@ -26,7 +27,7 @@ export const SnackPostSection: React.FC = () => {
         try {
             for (const snackData of snackDatas) 
             if(!/^\s*$/g.test(snackData.snack)) {
-                await axios.post("https://snack-backend.herokuapp.com/snack/daily", snackData, {
+                await axios.post(`${BACKEND_URI}/daily`, snackData, {
                     headers: {
                         "x-api-key": pwd
                     }

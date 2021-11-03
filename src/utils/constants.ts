@@ -1,0 +1,1 @@
+export const BACKEND_URI = "https://snack-backend.herokuapp.com/snack"
