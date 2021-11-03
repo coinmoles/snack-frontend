@@ -5,35 +5,32 @@ export const loadingSlice = createSlice({
     name: 'loading',
     initialState,
     reducers: {
-        startSnackLoading: state => {
-            state.snacks = "Loading";
+        resetLoading: state => {
+            state.current = "NoImage";
         },
-        finishSnackLoading: state => {
-            state.snacks = "Done";
+        setImageLoading: state => {
+            state.current = "ImageExist";
         },
-        resetSnackLoading: state => {
-            state.snacks = "None";
+        setSectionLoading: state => {
+            state.current = "ImageSectionSelected";
+        },
+        startOCRLoading: state => {
+            state.current = "OCRLoading";
+        },
+        finishOCRLoading: state => {
+            state.current = "OCRComplete";
         },
         startPostLoading: state => {
-            state.post = "Loading";
+            state.current = "PostLoading";
         },
         finishPostLoading: state => {
-            state.post = "Done";
-        },
-        resetPostLoading: state => {
-            state.post = "None";
-        },
-        startImageLoading: state => {
-            state.image = "Loading";
-        },
-        finishImageLoading: state => {
-            state.image = "Done";
+            state.current = "PostComplete";
         }
     }
 })
 
-export const { startSnackLoading, finishSnackLoading, resetSnackLoading, 
-    startPostLoading, finishPostLoading, resetPostLoading, 
-    startImageLoading, finishImageLoading } = loadingSlice.actions;
+export const { resetLoading, setImageLoading, setSectionLoading,
+    startOCRLoading, finishOCRLoading, startPostLoading, 
+    finishPostLoading } = loadingSlice.actions;
 
 export default loadingSlice.reducer;

@@ -1,8 +1,8 @@
-import React, { MouseEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Header, Ref } from "semantic-ui-react";
+import { Container, Header } from "semantic-ui-react";
 import { RootState } from "../../redux";
-import { finishImageLoading, finishSnackLoading, resetPostLoading, startSnackLoading } from "../../redux/loading/loadingSlice";
+import { setSectionLoading } from "../../redux/loading/loadingSlice";
 import { setBaseRect } from "../../redux/rect/rectSlice";
 
 interface PosNull {
@@ -101,8 +101,7 @@ export const SnackImage: React.FC = () => {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);    
 
         dispatch(setBaseRect({ xStart, xStop, yStart, yStop }));
-        dispatch(finishImageLoading());
-        dispatch(resetPostLoading());
+        dispatch(setSectionLoading());
         setDragStart({ notNull: false, x: null, y: null });
     }
 

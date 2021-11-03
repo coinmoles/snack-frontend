@@ -7,14 +7,18 @@ import { SnackImage } from "./SnackImage";
 import { SnackRowAndCol } from "./SnackRowAndCol";
 
 export const SnackImageSection: React.FC = () => {
-    const imageLoading = useSelector((state: RootState) => state.loading.image)
+    const loadingCurrent = useSelector((state: RootState) => state.loading.current)
+    const fullImageShow = loadingCurrent === "ImageExist" || 
+        loadingCurrent === "ImageSectionSelected" ||
+        loadingCurrent === "OCRLoading";
 
     return (
-        <Segment style={imageLoading === "None" ? { display: "None" } : {}}>
+        <Segment style={loadingCurrent === "NoImage" ? { display: "None" } : {}}>
             <Header as="h3" content="Read Snack Data from Image & Edit" />
             <Grid>
                 <Grid.Column width="8">
-                    <SnackImage />
+                    {fullImageShow && 
+                        <SnackImage />}
                 </Grid.Column>
                 <Grid.Column width="8">
                     <SnackRowAndCol />

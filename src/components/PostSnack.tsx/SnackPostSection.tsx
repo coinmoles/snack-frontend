@@ -1,14 +1,13 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Container, Header, Input, Segment } from "semantic-ui-react";
+import { Button, Header, Input, Segment } from "semantic-ui-react";
 import { RootState } from "../../redux";
-import { finishPostLoading, resetPostLoading, startPostLoading } from "../../redux/loading/loadingSlice";
+import { finishOCRLoading, finishPostLoading, startPostLoading } from "../../redux/loading/loadingSlice";
 
 export const SnackPostSection: React.FC = () => {
-    const snackDatas = useSelector((state: RootState) => state.snack.snackData)
-    const postLoading = useSelector((state: RootState) => state.loading.post);
-    const snackLoading = useSelector((state: RootState) => state.loading.snacks);
+    const snackDatas = useSelector((state: RootState) => state.snack.snackData);
+    const loadingCurrent = useSelector((state: RootState) => state.loading.current);
     const dispatch = useDispatch();
     const [pwd, setPwd] = useState("");
     
@@ -27,18 +26,18 @@ export const SnackPostSection: React.FC = () => {
             }
             dispatch(finishPostLoading());
         } catch(err) {
-            dispatch(resetPostLoading());
+            dispatch(finishOCRLoading());
             alert("Something Went Wrong(Probably a missing API KEY)");
         }
     }
 
     return (
-        <Segment style={snackLoading !== "Done" ? { display: "None" } : {}} className="overflow-hidden">
+        <Segment style={(loadingCurrent !== "PostLoading" && loadingCurrent !== "PostComplete")  ? { display: "None" } : {}} className="overflow-hidden">
             <Header as="h3" content="Post the Snack Data" />
             <Input value={pwd} fluid label="API-KEY" className="mb-4" onChange={(event) => setPwd(event.target.value)} />
-            {postLoading === "None" && <Button floated="right" primary content="Submit" onClick={handleSubmit} />}
-            {postLoading === "Loading" && <Button floated="right" primary content="Submitting" loading />}
-            {postLoading === "Done" && <Button floated="right" primary content="Submitted" disabled />}
+            {loadingCurrent === "OCRComplete" && <Button floated="right" primary content="Submit" onClick={handleSubmit} />}
+            {loadingCurrent === "PostLoading" && <Button floated="right" primary content="Submitting" loading />}
+            {loadingCurrent === "PostComplete" && <Button floated="right" primary content="Submitted" disabled />}
         </Segment>
     )
 
