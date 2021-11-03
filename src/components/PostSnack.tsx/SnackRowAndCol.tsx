@@ -49,10 +49,14 @@ export const SnackRowAndCol: React.FC = () => {
         
         dispatch(setCards({ xCard: newXCard, yCard: newYCard }))
         dispatch(startOCRLoading())
-        const snackDatas = await imageToSnack(imageUrl, linspace(yStart, yStop, newYCard), linspace(xStart, xStop, newXCard));
+        try{
+            const snackDatas = await imageToSnack(imageUrl, linspace(yStart, yStop, newYCard), linspace(xStart, xStop, newXCard));
 
-        dispatch(initSnack(snackDatas));
-        dispatch(finishOCRLoading());
+            dispatch(initSnack(snackDatas));
+            dispatch(finishOCRLoading());
+        } catch (err) {
+            alert("OCR Failed, Please Try Reloading(F5)")
+        }
     }
 
     return (
