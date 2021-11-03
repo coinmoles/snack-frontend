@@ -1,4 +1,3 @@
-import { SnackData } from "../../utils/interface/SnackData";
 
 export interface RectState {
     xStart: number, xStop: number, xCard: number,

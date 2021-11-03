@@ -1,4 +1,4 @@
-import React, { createRef, RefObject } from 'react';
+import React from 'react';
 import { Navbar } from './NavBar';
 
 export const withBasicView = (

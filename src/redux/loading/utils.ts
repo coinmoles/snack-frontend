@@ -1,4 +1,3 @@
-import { SnackData } from "../../utils/interface/SnackData";
 
 export interface LoadingState {
     current: "NoImage" | "ImageExist" | "ImageSectionSelected" | 

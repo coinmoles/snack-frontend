@@ -5,7 +5,12 @@ import { ocr } from "./ocr";
 export const ocrSnack = async (imgUrl: string, rectangle: Rectangle): Promise<SnackText> => {
     const text = await ocr(imgUrl, rectangle);
     const dateText = text.split("\n")[0];
-    const snackText = text.split("\n").slice(1).join('\n');
+    const snackText = text.split("\n")
+        .slice(1)
+        .join('\n')
+        .replace(/[\n]+/g, "\n")
+        .replace(/^[\n]+/g, "")
+        .replace(/[\n]+$/g, "");
 
     return {
         dateText,

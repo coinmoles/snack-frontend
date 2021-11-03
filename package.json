@@ -30,7 +30,8 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "git add . && git commit -m Heroku && git push heroku main"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -29,7 +29,7 @@ export const SnackRowAndCol: React.FC = () => {
         setDisAbleRowAndCol(loadingCurrent !== "ImageSectionSelected" &&
             loadingCurrent !== "OCRLoading");
         setLoadingRowAndCol(loadingCurrent === "OCRLoading");
-    }, [loadingCurrent]);
+    }, [loadingCurrent, dispatch]);
 
     const handleSubmit = async () => {
         if (imageUrl === undefined)

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Container, Divider, Form, Header, Loader } from "semantic-ui-react";
+import { Container, Divider, Form, Header } from "semantic-ui-react";
 import { RootState } from "../../redux";
 import { setImageLoading } from "../../redux/loading/loadingSlice";
 import { deleteSingleSnack, nextDay, prevDay, setSingleSnack } from "../../redux/snack/snackSlice";

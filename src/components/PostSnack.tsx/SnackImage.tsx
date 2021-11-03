@@ -22,7 +22,7 @@ type Pos = PosNotNull | PosNull
 export const SnackImage: React.FC = () => {
     const imageUrl = useSelector((state: RootState) => state.url.imageUrl);
     
-    const [img, setImg] = useState(new Image());
+    const [img] = useState(new Image());
     const [dragStart, setDragStart] = useState<Pos>({ notNull: false, x: null, y: null });
     const [imgLoading, setImgLoading] = useState(false);
 
@@ -36,7 +36,7 @@ export const SnackImage: React.FC = () => {
         
         img.src = imageUrl;
         img.onload = () => setImgLoading(true);
-    }, [imageUrl]);
+    }, [img, imageUrl]);
 
     useEffect(() => {
         if (ref.current === undefined || ref.current === null) 

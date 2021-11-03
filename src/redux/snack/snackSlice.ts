@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { SetSingleSnackPayload, initialState } from "./utils";
 import { SnackData } from "../../utils/interface/SnackData";
+import { initialState } from "./utils";
 
 export const snackSlice = createSlice({
     name: 'snack',
