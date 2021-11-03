@@ -16,7 +16,6 @@ export const postSnackData = async (snackTexts: SnackText[], year: number, month
     const snackDatas: SnackData[] = [];
 
     for (const snackText of snackTexts) {    
-        console.log(date, date.weekday);
         const snackData: SnackData = {
             year: date.year,
             month: date.month,
@@ -24,7 +23,6 @@ export const postSnackData = async (snackTexts: SnackText[], year: number, month
             snack: snackText.snackText.replace(/ /g, ""),
             rectangle: snackText.rectangle
         }
-        console.log(snackData);
         
         if (!/^[\s,\\/~]*$/g.test(snackData.snack))
             snackDatas.push(snackData);

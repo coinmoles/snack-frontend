@@ -14,6 +14,7 @@ export const snackSlice = createSlice({
         },
         initSnack: (state, action: PayloadAction<SnackData[]>) => {
             state.snackData = action.payload;
+            state.index = 0
         },
         nextDay: (state) => {
             if (state.index < state.snackData.length - 1)

@@ -10,10 +10,10 @@ import { imageToSnack } from "../../utils/imageToSnack";
 export const SnackRowAndCol: React.FC = () => {
     const imageUrl = useSelector((state: RootState) => state.url.imageUrl);
     const loadingCurrent = useSelector((state: RootState) => state.loading.current);
-    const { xStart, xStop, yStart, yStop, xCard, yCard } = useSelector((state: RootState) => state.rect)
+    const { xStart, xStop, yStart, yStop } = useSelector((state: RootState) => state.rect)
 
-    const [newYCard, setNewYCard] = useState<number>(0);
-    const [newXCard, setNewXCard] = useState<number>(0);
+    const [newYCard, setNewYCard] = useState<number | undefined>(undefined);
+    const [newXCard, setNewXCard] = useState<number | undefined>(undefined);
     const [disableRowAndCol, setDisAbleRowAndCol] = useState(true);
     const [loadingRowAndCol, setLoadingRowAndCol] = useState(false);
 
@@ -22,8 +22,8 @@ export const SnackRowAndCol: React.FC = () => {
     useEffect(() => {
         if (loadingCurrent === "NoImage" || loadingCurrent === "ImageExist"){
             dispatch(setCards({ xCard: 0, yCard: 0 }));
-            setNewXCard(0);
-            setNewYCard(0);
+            setNewXCard(undefined);
+            setNewYCard(undefined);
         }
 
         setDisAbleRowAndCol(loadingCurrent !== "ImageSectionSelected" &&
@@ -34,7 +34,9 @@ export const SnackRowAndCol: React.FC = () => {
     const handleSubmit = async () => {
         if (imageUrl === undefined)
             return;
-
+        if (newXCard === undefined || newYCard === undefined)
+            return;
+        
         const linspace = (start: number, stop: number, card: number): number[] => {
             let arr: number[] = [];
             let step = (stop - start) / card;
@@ -44,6 +46,7 @@ export const SnackRowAndCol: React.FC = () => {
             return arr;
         }
 
+        
         dispatch(setCards({ xCard: newXCard, yCard: newYCard }))
         dispatch(startOCRLoading())
         const snackDatas = await imageToSnack(imageUrl, linspace(yStart, yStop, newYCard), linspace(xStart, xStop, newXCard));
@@ -60,6 +63,7 @@ export const SnackRowAndCol: React.FC = () => {
                     fluid
                     type="number"
                     label="Col Num"
+                    placeholder="Col Num"
                     value={newXCard}
                     disabled={disableRowAndCol}
                     onChange={(event) => setNewXCard(parseInt(event.target.value))}
@@ -68,6 +72,7 @@ export const SnackRowAndCol: React.FC = () => {
                     fluid
                     type="number"
                     label="Row Num"
+                    placeholder="Row Num"
                     value={newYCard}
                     disabled={disableRowAndCol}
                     onChange={(event) => setNewYCard(parseInt(event.target.value))}
