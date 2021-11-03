@@ -9,6 +9,7 @@ export const ocrSnack = async (imgUrl: string, rectangle: Rectangle): Promise<Sn
 
     return {
         dateText,
-        snackText
+        snackText,
+        rectangle
     };
 }

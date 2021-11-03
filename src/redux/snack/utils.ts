@@ -1,3 +1,4 @@
+import { Rectangle } from "tesseract.js";
 import { SnackData } from "../../utils/interface/SnackData";
 
 export interface SnackState {
@@ -7,7 +8,7 @@ export interface SnackState {
 
 export const initialState: SnackState = {
     snackData: [],
-    index: 0
+    index: 0,
 }
 
 export interface SetSingleSnackPayload {

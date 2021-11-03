@@ -21,7 +21,8 @@ export const postSnackData = async (snackTexts: SnackText[], year: number, month
             year: date.year,
             month: date.month,
             day: date.day,
-            snack: snackText.snackText.replace(/ /g, "")
+            snack: snackText.snackText.replace(/ /g, ""),
+            rectangle: snackText.rectangle
         }
         console.log(snackData);
         

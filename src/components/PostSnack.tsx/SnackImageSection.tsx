@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Grid, Header, Segment } from "semantic-ui-react";
 import { RootState } from "../../redux";
+import { SnackCropped } from "./SnackCropped";
 import { SnackEdit } from "./SnackEdit";
 import { SnackImage } from "./SnackImage";
 import { SnackRowAndCol } from "./SnackRowAndCol";
@@ -12,6 +13,9 @@ export const SnackImageSection: React.FC = () => {
     const fullImageShow = loadingCurrent === "ImageExist" || 
         loadingCurrent === "ImageSectionSelected" ||
         loadingCurrent === "OCRLoading";
+    const croppedImageShow = loadingCurrent === "OCRComplete" ||
+        loadingCurrent === "PostLoading" ||
+        loadingCurrent === "PostComplete";
 
     return (
         <Segment style={loadingCurrent === "NoImage" ? { display: "None" } : {}}>
@@ -20,6 +24,8 @@ export const SnackImageSection: React.FC = () => {
                 <Grid.Column width="8">
                     {fullImageShow && 
                         <SnackImage />}
+                    {croppedImageShow &&
+                        <SnackCropped />}
                 </Grid.Column>
                 <Grid.Column width="8">
                     <SnackRowAndCol />
